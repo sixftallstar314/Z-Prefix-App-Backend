@@ -2,11 +2,12 @@ module.exports = {
     client: 'pg',
     connection: {
         host: 'localhost',
-        user: 'user',
+        user: 'admin',
         password: 'password', 
-        database: 'inventory_manager'
+        database: 'inventory_manager',
+        port: 5432
     },
     migrations : {
         tableName: 'knex_migrations'
     },
-};
+}

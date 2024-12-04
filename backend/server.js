@@ -1,11 +1,12 @@
 const express = require('express');
 const bodyParser = require ('body-parser');
-const knex = require ('knex')(require('./knexfile'));
-
+const cors = require('cors')
+const knex = require ('knex')(require('./knexfile.js'));
 const app = express(); 
-const PORT = 5000;
+const PORT = 3001;
 
 app.use(bodyParser.json());
+app.use(cors())
 
 knex.schema.hasTable('users').then((exists) => {
     if (!exists) {
