@@ -1,12 +1,32 @@
 const express = require('express');
 const bodyParser = require ('body-parser');
-const cors = require('cors')
-const knex = require ('knex')(require('./knexfile.js'));
+const session = require('express-session');
+const connectKnexSession = require('connect-session-knex')(session);
+const cors = require('cors');
+const knexConfig = require('./knexfile.js');
+const knex = require ('knex')(knexConfig)
+
 const app = express(); 
 const PORT = 3001;
 
+const store = new connectKnexSession({
+    knex: knex,
+    tablename: 'sessions',
+});
+
+app.use(KnexSession({
+    secret: '20755',
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}));
+
+app.use(cors());
 app.use(bodyParser.json());
-app.use(cors())
+
 
 knex.schema.hasTable('users').then((exists) => {
     if (!exists) {
@@ -25,6 +45,7 @@ knex.schema.hasTable('items').then((exists) => {
             table.string('name').notNullable
             table.text('description');
             table.integer('quantity').defaultTo(0);
+            table.integer('user_id').references('id').inTable('users');
         });
     }
 });
@@ -49,11 +70,14 @@ app.post('/login', (req, res) => {
         if (!user || user.password !== password) {
             return res.send();
         }
-        res.json({ message: 'login good'});
+        req.session.user = {id: user.id, username: user.username };
+        res.send('Login Good')
     });
 });
 
 app.get('/items', (reg, res) => {
+    const userId = req.user.id;
+
     knex('items')
     .select('*')
     .then((items)=> res.json(items))
@@ -61,6 +85,7 @@ app.get('/items', (reg, res) => {
 
 app.post('/items', (req, res) => {
     const{name, description, quantity} = req.body;
+    const userId = req.user.id;
 
     knex('items')
     .insert({ name, description, quantity})
@@ -70,9 +95,10 @@ app.post('/items', (req, res) => {
 
 app.delete('/items/:id', (req, res) => {
     const id = req.params.id;
+    const userId = req.user.id;
 
     knex('items')
-    .where({ id })
+    .where({ id, user_id: userId })
     .del()
     .then((count) => {
         if (count === 0) {
