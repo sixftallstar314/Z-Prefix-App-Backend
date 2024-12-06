@@ -15,5 +15,4 @@ of the APP and follow the README.md for starting that service.
 
 
 *Notes*
-Currently this App is a proof of concept doesn't contain password encryption or hashing. Passwords are in plane text so please be advised.
-Future features of this app will contain encryption and hashing. 
+Currently this App is a proof of concept doesn't contain .env file or gitignore. 

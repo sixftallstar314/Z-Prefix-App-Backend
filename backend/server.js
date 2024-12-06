@@ -4,7 +4,7 @@ const cors = require('cors')
 const knex = require ('knex')(require('./knexfile.js'));
 const app = express(); 
 const PORT = 3001;
-const path = require ('path')
+const bcrypt = require('bcrypt')
 
 app.use(bodyParser.json());
 app.use(cors())
@@ -39,9 +39,22 @@ app.post('/register', (req, res) => {
     const { username, password } =req.body;
 
     knex('users')
-    .insert({ username, password })
+        .where({username})
+        .first()
+        .then((user) => {
+            if (user) {
+                return res.json({ message: 'username already exists'});
+            }
+    bcrypt.hash(password, 10, (error, hash) => {
+        if (error) {
+            return res.json({message:'hashing error'})
+        }
+    knex('users')
+    .insert({ username, password: hash })
     .returning('id')
     .then((id) => res.json({ id: id[0] }));
+        });
+    });
 });
 
 app.post('/login', (req, res) => {
@@ -52,10 +65,15 @@ app.post('/login', (req, res) => {
     .where({ username})
     .first ()
     .then ((user) => {
-        if (!user || user.password !== password) {
-            return res.send();
+        if (!user) {
+            return res.json({message: 'Invalid username or password'});
         }
-        res.json({ message: 'login good'});
+        bcrypt.compare(password, user.password, (error, result) => {
+            if (error || !result) {
+                return res.json({message: 'Invalid username or password'})
+            }
+            res.json({ message: 'login good'});
+        });
     });
 });
 
