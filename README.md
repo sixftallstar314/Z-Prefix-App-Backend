@@ -7,8 +7,9 @@ Instructions for use:
 1. CD into the /backend directory. 
 2. Once that is complete run npm intall. 
 3. Then replace the development details in the knexfile.js with your knex DB details. 
-4. Then run node server.js from /backend directory to start the server for the Inventory Management App. 
-5. Lastly if you haven't already visit https://github.com/sixftallstar314/Z-Prefix-App and clone down the Front-end portion of the APP and follow the README.md for starting that service. 
+4. Then run systemctl start postgresql to start "pg" db.
+5. Then run node server.js from /backend directory to start the server for the Inventory Management App. 
+6. Lastly if you haven't already visit https://github.com/sixftallstar314/Z-Prefix-App and clone down the Front-end portion of the APP and follow the README.md for starting that service. 
 
 
 *Notes*
