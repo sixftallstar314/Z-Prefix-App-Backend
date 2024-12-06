@@ -29,6 +29,10 @@ knex.schema.hasTable('items').then((exists) => {
     }
 });
 
+app.get('/', (req, res) => {
+    res.send('Welcome to the Inventory App API')
+})
+
 app.post('/register', (req, res) => {
     const { username, password } =req.body;
 
@@ -67,6 +71,27 @@ app.post('/items', (req, res) => {
     .returning('*')
     .then((item) => res.json(item[0]))
 });
+
+app.put('/items/:id', (req, res) => {
+    const itemId = req.params.id;
+    const { name, description, quantity } = req.body;
+
+    knex('items')
+    .where({ id: itemId })
+    .update({ name, description, quantity })
+    .returning('*')
+    .then((updatedItem) => {
+        if (updatedItem.length) {
+            res.json(updatedItem[0]);
+        } else {
+            res.json({ message: 'Item not found' });
+        }
+    })
+    .catch((error) => res.json({ error: 'Failed to update item', details: error }));
+});
+
+
+
 
 app.delete('/items/:id', (req, res) => {
     const id = req.params.id;
