@@ -11,8 +11,8 @@ Instructions for use:
 5. Then run node server.js from /backend directory to start the server for the Inventory Management App. 
 6. Lastly if you haven't already visit https://github.com/sixftallstar314/Z-Prefix-App and clone down the Front-end portion 
 of the APP and follow the README.md for starting that service. 
-7. When you want to stop your database run sudo systemctl stop postgresql.
+7. When you want to stop your database run systemctl stop postgresql.
 
 
 *Notes*
-Currently this App is a proof of concept doesn't contain .env file or gitignore. 
+Currently this App is a proof of concept doesn't contain .env file or gitignore. The users db automatically populates with a user " James Kelley" for proof of concept of seeding. 
