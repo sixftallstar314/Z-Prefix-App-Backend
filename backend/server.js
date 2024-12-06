@@ -4,9 +4,11 @@ const cors = require('cors')
 const knex = require ('knex')(require('./knexfile.js'));
 const app = express(); 
 const PORT = 3001;
+const path = require ('path')
 
 app.use(bodyParser.json());
 app.use(cors())
+app.use(express.static('backend/public'));
 
 knex.schema.hasTable('users').then((exists) => {
     if (!exists) {
